@@ -5,7 +5,8 @@
  * to the tile's *unrotated box*, as fractions (u, v) of the image — u = 0
  * on the left edge, 1 on the right edge; v likewise top → bottom — and
  * "of the image" means mirrored back whenever the tile is flipped
- * (texture.scaleX/scaleY < 0). Moving, resizing, rotating or flipping the
+ * (texture.scaleX/scaleY < 0 — Foundry mirrors about the anchor point, so
+ * do we). Moving, resizing, rotating or flipping the
  * tile is then a pure re-projection of those fractions: no need to know
  * what the companion looked like in scene space before the change.
  *
@@ -40,8 +41,10 @@ export function tileFrame(tile) {
   const ay = v14 ? (tile.texture?.anchorY ?? 0.5) : 0;
   const left = tile.x - ax * w, top = tile.y - ay * h;
   const pivot = v14 ? { x: tile.x, y: tile.y } : { x: left + w / 2, y: top + h / 2 };
+  // A negative texture scale mirrors the image about its ANCHOR (V14), about its centre (V13).
+  const mirror = v14 ? { u: ax, v: ay } : { u: 0.5, v: 0.5 };
   return {
-    left, top, w, h, pivot,
+    left, top, w, h, pivot, mirror,
     rot: tile.rotation ?? 0,
     flipX: (tile.texture?.scaleX ?? 1) < 0,
     flipY: (tile.texture?.scaleY ?? 1) < 0
@@ -50,8 +53,8 @@ export function tileFrame(tile) {
 
 /** Image fraction → scene point. */
 export function toScene(frame, u, v) {
-  if ( frame.flipX ) u = 1 - u;
-  if ( frame.flipY ) v = 1 - v;
+  if ( frame.flipX ) u = 2 * frame.mirror.u - u;
+  if ( frame.flipY ) v = 2 * frame.mirror.v - v;
   const px = frame.left + u * frame.w, py = frame.top + v * frame.h;
   if ( !frame.rot ) return { x: px, y: py };
   const rad = Math.toRadians(frame.rot), cos = Math.cos(rad), sin = Math.sin(rad);
@@ -69,8 +72,8 @@ export function toLocal(frame, x, y) {
   }
   let u = frame.w ? (x - frame.left) / frame.w : 0.5;
   let v = frame.h ? (y - frame.top) / frame.h : 0.5;
-  if ( frame.flipX ) u = 1 - u;
-  if ( frame.flipY ) v = 1 - v;
+  if ( frame.flipX ) u = 2 * frame.mirror.u - u;
+  if ( frame.flipY ) v = 2 * frame.mirror.v - v;
   return { u, v };
 }
 
