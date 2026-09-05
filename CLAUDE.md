@@ -61,7 +61,31 @@ download dans `module.json` pointent déjà dessus ; workflow release sur tag
   classes core `form-group`/`form-fields`/`hint`). Pas de sous-type de
   document ni de pack → un simple F5 recharge le module.
 
+## Vérifié en jeu (2026-09-05, monde `cthulhu`, V14 14.367, MJ)
+
+Scène de test jetable, tuile `assets/radio1920.webp` 600×321 tournée 15° :
+bind → 70 points détourés, centre dedans / coin transparent dehors, son et
+lumière au centre, lumière tournée de 15°. Déplacement, rotation,
+masquage, miroir, restauration à l'identique (aller-retour stable).
+**Géométrie = erreur 0** face à `mesh.transform.localTransform` sur 4
+configurations (ancre 0.2/0.8 + rot 33, idem miroir X, ancre 0.7/0.3 +
+miroir X+Y + rot 200) — c'est ce test qui a révélé que Foundry retourne
+l'image **autour de l'ancre**, pas du centre (corrigé, `frame.mirror`).
+Synchro inverse (son déplacé → u/v, région remodelée en rectangle →
+polygone 4 points conservé au déplacement suivant, rotation de lumière →
+relative), redétourage auto au changement d'image (110 points sur la
+serveuse), collage (tuile et région) épuré, suppression manuelle d'un
+compagnon → flag retiré, cascade à la suppression de la tuile, bouton HUD
+allumé + dialogue. Non testé : client V13, joueur non-MJ (pas concerné),
+plusieurs MJ connectés.
+
 ## Pièges
+
+- **Tests dans le pane navigateur caché** : pas de rAF → le placeable ne se
+  redessine jamais (changement d'image → `mesh.texture` reste l'ancienne) ;
+  et les timers sont bridés à ~1/s → un script qui `await`e des `setTimeout`
+  dépasse vite les 45 s de l'outil. Scripts courts, et
+  `canvas.app.ticker.update()` n'est pas une solution (le script a pendu).
 
 - `RegionDocument.hidden` existe en V14 (pas sûr en V13) → toujours passer
   par `has(doc, 'hidden')` (test du schéma) avant d'écrire `hidden`,
