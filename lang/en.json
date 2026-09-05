@@ -1,4 +1,14 @@
 {
+  "TYPES": {
+    "RegionBehavior": {
+      "tile-companions": {
+        "clickMacro": "Macro on click (Tile Companions)",
+        "toScene": "Go to scene on click (Tile Companions)",
+        "openDocument": "Open document on click (Tile Companions)",
+        "jukebox": "Jukebox on click (Tile Companions)"
+      }
+    }
+  },
   "TILECOMPANIONS": {
     "DefaultName": "Tile",
     "HudTooltip": "Tile Companions — bind a region, a sound, a light to this tile",
@@ -9,9 +19,17 @@
       "light": "light"
     },
     "Warn": {
-      "GMOnly": "Only a Gamemaster can bind companions to a tile.",
+      "GMOnly": "Only a Gamemaster can do this.",
       "NoScene": "This tile does not belong to a scene.",
-      "NoTile": "Select a tile on the canvas first."
+      "NoTile": "Select a tile on the canvas first.",
+      "NoMacro": "This region has no macro configured (or the macro was deleted).",
+      "NoTargetScene": "This region has no scene configured (or the scene was deleted).",
+      "NoPlaylist": "No playlist configured (or the playlist was deleted).",
+      "EmptyPlaylist": "This playlist is empty.",
+      "NoDocument": "This region has no journal (or page) configured.",
+      "DocumentNoPermission": "You do not have permission to read this document.",
+      "DocumentNoGM": "No Gamemaster is online to give you access to this document — try again when one is.",
+      "DocumentGrantFailed": "The Gamemaster could not give you access to this document."
     },
     "Info": {
       "NothingToDo": "Nothing to create: the tile already has those companions.",
@@ -21,18 +39,35 @@
       "Unbound": "“{name}”: companions deleted.",
       "Detached": "“{name}”: companions detached (kept in the scene as independent documents).",
       "Retraced": "“{name}”: region re-shaped on the image's visible outline.",
-      "RetracedBox": "“{name}”: region reset to the tile's box (image pixels not readable)."
+      "RetracedBox": "“{name}”: region reset to the tile's box (image pixels not readable).",
+      "JukeboxOn": "🎷 Jukebox: {playlist} — {track}",
+      "JukeboxOff": "🎷 Jukebox stopped.",
+      "JukeboxOffResumed": "🎷 Jukebox stopped — the Gamemaster's music resumes.",
+      "ResyncDone": "🎷 Music re-synced for the whole table — the Gamemaster's playlist resumes.",
+      "ResyncSilence": "🎷 Local music stopped for the whole table (no Gamemaster playlist playing)."
     },
     "Prompt": {
       "Title": "Tile Companions",
       "Hint": "Create companions that follow this tile when it is moved, resized, rotated, flipped, hidden or deleted.",
       "Multi": "({n} tiles selected: the same choices apply to each; names are taken from each tile.)",
       "AlreadyBound": "already bound",
+      "ConfigureLater": "— configure later —",
       "Region": "Region",
       "Name": "Name",
       "NameAuto": "(from the tile name / image file)",
       "Trace": "Trace the visible outline",
       "TraceHint": "Region shaped on the image's non-transparent pixels. Unticked: the tile's rectangle.",
+      "ClickBehavior": "On click",
+      "ClickNone": "— nothing (plain region) —",
+      "ClickHint": "Makes the region clickable by players, without a token: run a macro, go to a scene, open a journal, or start a local jukebox. Everything else (hover label, colour…) is in the behavior's configuration.",
+      "Macro": "Macro",
+      "TargetScene": "Destination scene",
+      "Journal": "Journal",
+      "DocumentUuid": "…or a page UUID",
+      "DocumentUuidHint": "Overrides the journal above. Right-click a page title → Copy UUID.",
+      "Grant": "Grant the clicker permission",
+      "Playlist": "Playlist",
+      "Highlight": "Highlight",
       "Sound": "Ambient sound",
       "SoundFile": "Audio file",
       "Browse": "Browse",
@@ -45,7 +80,7 @@
       "LightBright": "Bright radius",
       "LightColor": "Colour",
       "LightColorHint": "Leave empty for a white light. Every other setting (animation, angle…) is in the light's own configuration, which opens after creation.",
-      "OpenSheets": "Open the sound / light configuration afterwards",
+      "OpenSheets": "Open the configuration windows afterwards",
       "Create": "Create",
       "Retrace": "Re-trace the region",
       "Unbind": "Detach…",
@@ -54,6 +89,81 @@
       "UnbindConfirm": "Delete the companions along with the link, or keep them in the scene as ordinary, independent documents?",
       "UnbindDelete": "Delete them",
       "UnbindKeep": "Keep them"
+    },
+    "ClickCommon": {
+      "FIELDS": {
+        "label": {
+          "label": "Hover label",
+          "hint": "Shown above the region on hover. Empty = the region name (or the target's name)."
+        },
+        "highlight": {
+          "label": "Highlight",
+          "hint": "How the clickable area is signalled to players.",
+          "choices": {
+            "hover": "On hover only",
+            "always": "Always (subtle) + hover",
+            "never": "Never (cursor only)"
+          }
+        },
+        "color": {
+          "label": "Highlight colour",
+          "hint": "Empty = the region's colour."
+        }
+      }
+    },
+    "MacroBehavior": {
+      "Hint": "Makes the region clickable: a click runs the chosen macro on the clicking user's client — even without permission on the macro (no token needed). The macro runs with the player's rights: what they may not modify stays out of the script's reach.",
+      "FIELDS": {
+        "macro": {
+          "label": "Macro to run",
+          "hint": "Drag and drop the macro (script or chat). It runs for the user who clicks, permission or not. In a script macro, scope.behavior and scope.region give the context."
+        }
+      }
+    },
+    "SceneBehavior": {
+      "Hint": "Makes the region clickable: a click takes the clicking user to the chosen scene (no token needed — a door, a staircase, a city map…). Players reach it even when it is not in the navigation bar.",
+      "FIELDS": {
+        "targetScene": {
+          "label": "Destination scene",
+          "hint": "Drag and drop the scene."
+        },
+        "activateForAll": {
+          "label": "Activate for the whole table (GM)",
+          "hint": "When the Gamemaster clicks: activate the scene for every player instead of viewing it alone. No effect for a player."
+        }
+      }
+    },
+    "DocumentBehavior": {
+      "Hint": "Makes the region clickable: a click opens a journal (or a specific page) for the clicking user — a poster, a letter, a newspaper, a clue… If the player may not see it, the online Gamemaster automatically grants them Observer permission (permanent, per player).",
+      "FIELDS": {
+        "document": {
+          "label": "Journal or page",
+          "hint": "Drag and drop a journal, or a journal page (UUID JournalEntry.x.JournalEntryPage.y)."
+        },
+        "grant": {
+          "label": "Grant the clicker permission",
+          "hint": "Gives Observer to the player who clicks (through the online Gamemaster — one must be online). Unticked: only players who already have permission can open it."
+        }
+      }
+    },
+    "JukeboxBehavior": {
+      "Hint": "Makes the region clickable: a click starts (or stops) a local jukebox on the chosen playlist for the clicking user. It fades out their music (Music channel only — not environment nor interface) and plays on the Interface channel, adjustable with their Interface slider. No GM needed; the GM can see who listens to what and stop everything.",
+      "FIELDS": {
+        "playlist": {
+          "label": "Playlist",
+          "hint": "Drag and drop the playlist. Its mode (sequential, shuffle, simultaneous) and per-track loops are honoured."
+        },
+        "mode": {
+          "label": "Playback mode",
+          "hint": "Overrides the playlist's mode for this region.",
+          "choices": {
+            "playlist": "The playlist's own",
+            "sequential": "Sequential (looping)",
+            "shuffle": "Shuffle",
+            "simultaneous": "Simultaneous"
+          }
+        }
+      }
     },
     "Settings": {
       "CascadeDelete": {

@@ -26,6 +26,7 @@
 import { MODULE_ID, KINDS, DOC_NAME, COLLECTION, OPT, SETTING_CASCADE, SETTING_AUTO_RETRACE, SETTING_SYNC_HIDDEN } from './constants.js';
 import { tileFrame, toScene, toLocal, shapesToScene, shapesFromRegion, normalizeFlat, fullBoxShapes, pixelsToUnits, round5 } from './geometry.js';
 import { traceTileOutline, prettyName } from './trace.js';
+import { addClickBehavior } from './behaviors/index.js';
 
 const GEOMETRY_KEYS = ['x', 'y', 'width', 'height', 'rotation'];
 const TEXTURE_GEOMETRY_KEYS = ['anchorX', 'anchorY', 'scaleX', 'scaleY'];
@@ -84,7 +85,7 @@ export function findTileOf(doc) {
  *
  * @param {TileDocument} tile
  * @param {object} [options]
- * @param {boolean|object} [options.region]  { trace=true, name, color, visibility }
+ * @param {boolean|object} [options.region]  { trace=true, name, color, visibility, behavior: { type, system } }
  * @param {boolean|object} [options.sound]   { path, radius, volume=0.5, repeat=true, walls=true, easing=true, u=0.5, v=0.5, name }
  * @param {boolean|object} [options.light]   { dim, bright, color, angle=360, animation, walls=true, vision=false, u=0.5, v=0.5, rotation=0, name }
  * @param {boolean} [options.openSheets=true]  open the sound/light config sheets afterwards
@@ -131,6 +132,10 @@ export async function bind(tile, { region = null, sound = null, light = null, op
     flag.region = { id: doc.id, shapes };
     created.region = doc;
     created.traced = traced;
+    // Optional click behavior: { type: 'clickMacro'|'toScene'|'openDocument'|'jukebox', system }
+    if ( opts.behavior?.type ) {
+      created.behavior = await addClickBehavior(doc, opts.behavior.type, opts.behavior.system ?? {}, ours());
+    }
   }
 
   // Sound — at the tile's centre by default, radius = the tile's larger side.
@@ -184,7 +189,10 @@ export async function bind(tile, { region = null, sound = null, light = null, op
     name: prettyName(tile),
     list: kinds.map(k => L(`Kind.${k}`)).join(', ')
   }));
-  if ( openSheets ) for ( const k of ['sound', 'light'] ) created[k]?.sheet?.render({ force: true });
+  if ( openSheets ) {
+    for ( const k of ['sound', 'light'] ) created[k]?.sheet?.render({ force: true });
+    created.behavior?.sheet?.render({ force: true });
+  }
   return created;
 }
 

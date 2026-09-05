@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.2.0 — 2026-09-05
+
+Comportements de région cliquables **sans token**, portés depuis
+coc7-dialogues et débarrassés de tout ce qui touchait au système CoC7 :
+
+- **Macro au clic** (exécutée chez le cliqueur, permission ou pas, avec ses
+  droits), **Vers une scène au clic** (option « activer pour toute la
+  table » pour le MJ), **Ouvrir un document au clic** (journal ou page ; le
+  MJ connecté accorde Observateur au cliqueur via le socket du module),
+  **Jukebox au clic** (lecteur local par joueur sur une playlist, canal
+  Interface, état en flags User, coupé à l'activation d'une scène).
+- Commun : libellé au survol, surbrillance (survol / toujours / jamais),
+  couleur, curseur main ; le MJ ne clique que depuis le calque Jetons.
+- Dialogue du HUD : champ « Au clic » pour attacher un de ces comportements
+  à la région créée ; `bind()` accepte `region.behavior`.
+- API : `addClickBehavior`, `executeClick`, `getClickableRegions`,
+  `jukebox.*`, `resyncMusicForEveryone`, `grantObserver`.
+- Nouveaux sous-types + `socket: true` dans le manifeste → **relancer le
+  monde** après mise à jour (pas juste F5).
+
 ## 0.1.0 — 2026-09-05
 
 Première version.

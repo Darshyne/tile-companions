@@ -1,4 +1,14 @@
 {
+  "TYPES": {
+    "RegionBehavior": {
+      "tile-companions": {
+        "clickMacro": "Macro au clic (Tile Companions)",
+        "toScene": "Vers une scène au clic (Tile Companions)",
+        "openDocument": "Ouvrir un document au clic (Tile Companions)",
+        "jukebox": "Jukebox au clic (Tile Companions)"
+      }
+    }
+  },
   "TILECOMPANIONS": {
     "DefaultName": "Tuile",
     "HudTooltip": "Tile Companions — lier une région, un son, une lumière à cette tuile",
@@ -9,9 +19,17 @@
       "light": "lumière"
     },
     "Warn": {
-      "GMOnly": "Seul un MJ peut lier des compagnons à une tuile.",
+      "GMOnly": "Réservé au MJ.",
       "NoScene": "Cette tuile n'appartient à aucune scène.",
-      "NoTile": "Sélectionnez d'abord une tuile sur le canevas."
+      "NoTile": "Sélectionnez d'abord une tuile sur le canevas.",
+      "NoMacro": "Cette région n'a pas de macro configurée (ou la macro a été supprimée).",
+      "NoTargetScene": "Cette région n'a pas de scène configurée (ou la scène a été supprimée).",
+      "NoPlaylist": "Aucune playlist configurée (ou playlist supprimée).",
+      "EmptyPlaylist": "Cette playlist est vide.",
+      "NoDocument": "Cette région n'a pas de journal (ou page) configuré.",
+      "DocumentNoPermission": "Vous n'avez pas la permission de consulter ce document.",
+      "DocumentNoGM": "Aucun MJ connecté pour vous donner accès à ce document — réessayez quand un MJ est en ligne.",
+      "DocumentGrantFailed": "Le MJ n'a pas pu vous donner accès à ce document."
     },
     "Info": {
       "NothingToDo": "Rien à créer : la tuile a déjà ces compagnons.",
@@ -21,18 +39,35 @@
       "Unbound": "« {name} » : compagnons supprimés.",
       "Detached": "« {name} » : compagnons détachés (conservés dans la scène comme documents indépendants).",
       "Retraced": "« {name} » : région redétourée sur le contour visible de l'image.",
-      "RetracedBox": "« {name} » : région ramenée à l'emprise de la tuile (pixels de l'image illisibles)."
+      "RetracedBox": "« {name} » : région ramenée à l'emprise de la tuile (pixels de l'image illisibles).",
+      "JukeboxOn": "🎷 Jukebox : {playlist} — {track}",
+      "JukeboxOff": "🎷 Jukebox coupé.",
+      "JukeboxOffResumed": "🎷 Jukebox coupé — la musique du MJ reprend.",
+      "ResyncDone": "🎷 Musique resynchronisée pour toute la table — la playlist du MJ reprend.",
+      "ResyncSilence": "🎷 Musique locale coupée pour toute la table (aucune playlist du MJ en cours)."
     },
     "Prompt": {
       "Title": "Tile Companions",
       "Hint": "Crée des compagnons qui suivent cette tuile quand elle est déplacée, redimensionnée, tournée, retournée, masquée ou supprimée.",
       "Multi": "({n} tuiles sélectionnées : les mêmes choix s'appliquent à chacune ; les noms viennent de chaque tuile.)",
       "AlreadyBound": "déjà liée",
+      "ConfigureLater": "— à configurer ensuite —",
       "Region": "Région",
       "Name": "Nom",
       "NameAuto": "(d'après le nom de la tuile / du fichier image)",
       "Trace": "Détourer le contour visible",
       "TraceHint": "Région de la forme des pixels non transparents de l'image. Décoché : le rectangle de la tuile.",
+      "ClickBehavior": "Au clic",
+      "ClickNone": "— rien (région simple) —",
+      "ClickHint": "Rend la région cliquable par les joueurs, sans token : exécuter une macro, aller sur une scène, ouvrir un journal, ou lancer un jukebox local. Le reste (libellé au survol, couleur…) se règle dans la configuration du comportement.",
+      "Macro": "Macro",
+      "TargetScene": "Scène de destination",
+      "Journal": "Journal",
+      "DocumentUuid": "…ou l'UUID d'une page",
+      "DocumentUuidHint": "Prend le pas sur le journal ci-dessus. Clic droit sur le titre d'une page → Copier l'UUID.",
+      "Grant": "Donner la permission au cliqueur",
+      "Playlist": "Playlist",
+      "Highlight": "Surbrillance",
       "Sound": "Son d'ambiance",
       "SoundFile": "Fichier audio",
       "Browse": "Parcourir",
@@ -45,7 +80,7 @@
       "LightBright": "Rayon de lumière vive",
       "LightColor": "Couleur",
       "LightColorHint": "Vide = lumière blanche. Tout le reste (animation, angle…) se règle dans la configuration de la lumière, ouverte après création.",
-      "OpenSheets": "Ouvrir la configuration du son / de la lumière ensuite",
+      "OpenSheets": "Ouvrir les fenêtres de configuration ensuite",
       "Create": "Créer",
       "Retrace": "Redétourer la région",
       "Unbind": "Détacher…",
@@ -54,6 +89,81 @@
       "UnbindConfirm": "Supprimer les compagnons avec le lien, ou les garder dans la scène comme documents ordinaires, indépendants ?",
       "UnbindDelete": "Les supprimer",
       "UnbindKeep": "Les garder"
+    },
+    "ClickCommon": {
+      "FIELDS": {
+        "label": {
+          "label": "Libellé au survol",
+          "hint": "Affiché au-dessus de la région au survol. Vide = nom de la région (ou de la cible)."
+        },
+        "highlight": {
+          "label": "Surbrillance",
+          "hint": "Comment signaler la zone cliquable aux joueurs.",
+          "choices": {
+            "hover": "Au survol seulement",
+            "always": "Toujours (discrète) + survol",
+            "never": "Jamais (curseur seulement)"
+          }
+        },
+        "color": {
+          "label": "Couleur de surbrillance",
+          "hint": "Vide = couleur de la région."
+        }
+      }
+    },
+    "MacroBehavior": {
+      "Hint": "Rend la région cliquable : un clic exécute la macro choisie sur le client de l'utilisateur qui clique — même sans permission sur la macro (aucun token nécessaire). La macro s'exécute avec les droits du joueur : ce qu'il n'a pas le droit de modifier reste hors de portée du script.",
+      "FIELDS": {
+        "macro": {
+          "label": "Macro à exécuter",
+          "hint": "Glisser-déposer la macro (script ou chat). Elle s'exécute chez l'utilisateur qui clique, permission ou pas. Dans une macro script : scope.behavior et scope.region donnent le contexte."
+        }
+      }
+    },
+    "SceneBehavior": {
+      "Hint": "Rend la région cliquable : un clic emmène l'utilisateur qui clique sur la scène choisie (aucun token nécessaire — porte, escalier, plan de la ville…). Les joueurs y accèdent même si la scène n'est pas dans la barre de navigation.",
+      "FIELDS": {
+        "targetScene": {
+          "label": "Scène de destination",
+          "hint": "Glisser-déposer la scène."
+        },
+        "activateForAll": {
+          "label": "Activer pour toute la table (MJ)",
+          "hint": "Quand c'est le MJ qui clique : active la scène pour tous les joueurs au lieu de la voir seul. Sans effet pour un joueur."
+        }
+      }
+    },
+    "DocumentBehavior": {
+      "Hint": "Rend la région cliquable : un clic ouvre un journal (ou une page précise) chez l'utilisateur qui clique — affiche, lettre, journal, indice… Si le joueur n'a pas le droit de le voir, le MJ connecté lui donne automatiquement la permission Observateur (définitif, par joueur).",
+      "FIELDS": {
+        "document": {
+          "label": "Journal ou page",
+          "hint": "Glisser-déposer un journal, ou une page de journal (UUID JournalEntry.x.JournalEntryPage.y)."
+        },
+        "grant": {
+          "label": "Donner la permission au cliqueur",
+          "hint": "Accorde Observateur au joueur qui clique (via le MJ connecté — un MJ doit être en ligne). Décoché : seuls les joueurs ayant déjà la permission peuvent ouvrir."
+        }
+      }
+    },
+    "JukeboxBehavior": {
+      "Hint": "Rend la région cliquable : un clic lance (ou coupe) chez l'utilisateur qui clique un jukebox local sur la playlist choisie. Il coupe sa musique (canal Musique uniquement — pas l'environnement ni l'interface) et joue sur le canal Interface, réglable par son curseur Interface. Sans MJ nécessaire ; le MJ voit qui écoute quoi et peut tout couper.",
+      "FIELDS": {
+        "playlist": {
+          "label": "Playlist",
+          "hint": "Glisser-déposer la playlist. Son mode (séquentiel, aléatoire, simultané) et les boucles par piste sont respectés."
+        },
+        "mode": {
+          "label": "Mode de lecture",
+          "hint": "Surcharge le mode de la playlist pour cette région.",
+          "choices": {
+            "playlist": "Celui de la playlist",
+            "sequential": "Séquentiel (en boucle)",
+            "shuffle": "Aléatoire",
+            "simultaneous": "Simultané"
+          }
+        }
+      }
     },
     "Settings": {
       "CascadeDelete": {

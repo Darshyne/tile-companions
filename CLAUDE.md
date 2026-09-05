@@ -61,7 +61,55 @@ download dans `module.json` pointent déjà dessus ; workflow release sur tag
   classes core `form-group`/`form-fields`/`hint`). Pas de sous-type de
   document ni de pack → un simple F5 recharge le module.
 
+## v0.2 — comportements cliquables (2026-09-05, demande du MJ)
+
+Portés depuis coc7-dialogues **sans le dialogue PNJ** (celui-là dépend de
+CoC7 : jets, SAN, argent) : `scripts/behaviors/` = `click-macro.js`,
+`to-scene.js`, `open-document.js`, `jukebox.js`, champs communs dans
+`common.js` (préfixe i18n `TILECOMPANIONS.ClickCommon`, listé APRÈS le
+préfixe propre dans `LOCALIZATION_PREFIXES` — Foundry cumule les préfixes,
+cf. `SHAPE.TYPES.rectangle` + `SHAPE.TYPES.base` en core), table centrale
+`index.js` (`CLICK_BEHAVIORS` → enregistrement, dispatch, HUD, `bind`).
+`region-click.js` (détection clic sur `canvas.stage`, surbrillance
+décorative `eventMode='none'`, curseur par ticker) et `socket.js`
+(grantDocument + resyncMusic) repris tels quels, clés renommées. Tout ce que
+coc7-dialogues a appris là-dessus (couche « hit » supprimée en 0.13.1,
+curseur réaffirmé par frame, nom de champ `scene` interdit → `targetScene`,
+MJ ne clique que depuis le calque Jetons) reste valable ici — voir son
+CLAUDE.md pour l'historique. Nouveaux sous-types + `socket: true` →
+**relancement du monde** obligatoire.
+
 ## Vérifié en jeu (2026-09-05, monde `cthulhu`, V14 14.367, MJ)
+
+v0.2 : `bind` avec `region.behavior` clickMacro → behavior créé (nom
+localisé, `displayName` = label), `getClickableRegions` le liste,
+`executeClick` exécute la macro avec `scope.region/behavior` (retour 42),
+clic simulé sur `canvas.stage` (`emit('pointerdown'/'pointerup')` avec
+`global` + `getLocalPosition`, calque Jetons actif) déclenche la macro et
+un déplacement > 6 px est ignoré ; openDocument (`displayName` = nom du
+journal, `executeClick` ouvre la feuille, `grantObserver` pose
+`ownership.<test> = 2`) ; toScene (`displayName` = nom de la scène cible,
+`executeClick` bascule bien sur « Arkham Nuit ») ; dialogue HUD : select
+« Au clic » avec les 4 types, lignes `data-for` masquées/affichées selon le
+choix. **Jukebox non vérifiable ici** : `start()` ne résout jamais en
+navigateur caché (`AudioHelper.play` attend un geste utilisateur /
+AudioContext suspendu) — `status()` se remplit, mais le flag User (posé
+après la lecture) reste non testé ; code identique à coc7-dialogues 0.10,
+vérifié en jeu là-bas. Voir plus bas pour la v0.1.
+
+**Piège V14 vu en test** : `journal.update({ 'ownership.-=<id>': null })`
+(ou la forme imbriquée) est ignoré silencieusement — la clé reste. Pour
+retirer un utilisateur de `ownership`, réécrire l'objet entier :
+`update({ ownership: sansLaClé }, { recursive: false, diff: false })`.
+Noté aussi dans `foundry-core-notes/v14-migration.md`.
+
+**Piège de test v0.2** : `game.scenes.viewed` nul et « Framebuffer width or
+height is zero » au chargement du monde = viewport 0×0 (pane caché + taille
+« desktop ») → toujours `resize_window` 1600×900 AVANT de rejoindre le
+monde, sinon le canevas ne s'initialise jamais (et `canvas.initialize()` à
+la main échoue : plugins PIXI déjà enregistrés).
+
+v0.1 :
 
 Scène de test jetable, tuile `assets/radio1920.webp` 600×321 tournée 15° :
 bind → 70 points détourés, centre dedans / coin transparent dehors, son et

@@ -12,8 +12,9 @@ Cas d'usage typiques : une mare (tuile détourée) → région « coût de
 déplacement » ou « macro à l'entrée » exactement sur l'eau ; un feu de camp →
 lumière chaude + crépitement qui bougent avec la tuile ; une radio / un
 gramophone → son localisé ; une trappe → téléportation ; un piège → macro. Les
-**comportements** eux-mêmes sont ceux du cœur de Foundry (ou d'un autre
-module) : Tile Companions ne fournit que la forme et le lien.
+comportements déclenchés par les **tokens** sont ceux du cœur de Foundry ;
+Tile Companions y ajoute (v0.2) quatre comportements déclenchés par un simple
+**clic** des joueurs, sans token — voir plus bas.
 
 ## Installation
 
@@ -71,6 +72,32 @@ Le copier-coller d'une tuile liée donne une tuile **sans** compagnons (sinon
 la copie déplacerait ceux de l'original) ; la duplication d'une **scène**
 conserve les liens.
 
+## Comportements au clic (v0.2)
+
+Quatre **comportements de région** supplémentaires, cliquables par les
+joueurs **sans token** (théâtre de l'esprit, plans de ville, indices sur une
+table…) — les comportements du cœur de Foundry ne réagissent qu'aux tokens.
+Ils s'ajoutent comme n'importe quel comportement (calque Régions → double-clic
+sur la région → Comportements), ou directement depuis le dialogue du HUD
+(« Au clic ») à la création de la région :
+
+| Comportement | Au clic | Options propres |
+|---|---|---|
+| **Macro au clic** | exécute la macro chez l'utilisateur qui clique, même sans permission sur la macro (elle tourne avec *ses* droits — aucun pouvoir supplémentaire). `scope.behavior` et `scope.region` sont disponibles dans une macro script. | macro |
+| **Vers une scène au clic** | `scene.view()` chez le cliqueur, même si la scène n'est pas dans la barre de navigation. | scène ; *Activer pour toute la table* (MJ seulement) |
+| **Ouvrir un document au clic** | ouvre un journal, ou une page précise, chez le cliqueur. Si le joueur n'a pas le droit de le voir, le **MJ connecté** lui accorde Observateur via le socket du module (définitif, par joueur). Sans MJ en ligne : avertissement clair. | journal ou page (UUID) ; *Donner la permission* |
+| **Jukebox au clic** | lance / coupe chez le cliqueur un lecteur **local** sur une playlist : coupe sa musique (canal Musique seulement), joue sur le canal **Interface** (curseur du joueur), respecte le mode de la playlist et les boucles ; état publié dans ses flags User (`api.jukebox.listActive()` côté MJ). Activer une scène coupe tous les jukebox. `api.resyncMusicForEveryone()` (MJ) ramène tout le monde sur la musique du MJ. | playlist ; mode (celui de la playlist / séquentiel / aléatoire / simultané) |
+
+Commun aux quatre : **libellé au survol** (vide = nom de la cible ou de la
+région), **surbrillance** (au survol / toujours discrète / jamais), **couleur**
+(vide = celle de la région), curseur main. Une région n'a qu'un comportement
+cliquable actif à la fois (le premier). Le MJ ne déclenche les clics que
+depuis le calque **Jetons**, pour ne pas voler ceux des outils d'édition.
+
+Ces comportements viennent de [coc7-dialogues](https://github.com/Darshyne/coc7-dialogues),
+débarrassés de tout ce qui touchait au système Call of Cthulhu ; le dialogue
+de PNJ à embranchements, lui, reste là-bas.
+
 ## Réglages (monde)
 
 - **Supprimer les compagnons avec la tuile** (défaut : oui).
@@ -86,7 +113,8 @@ const api = game.modules.get('tile-companions').api;
 const tile = canvas.tiles.controlled[0].document;
 
 await api.bind(tile, {
-  region: { trace: true, name: 'Mare' },                 // ou true
+  region: { trace: true, name: 'Mare',                   // ou true
+            behavior: { type: 'clickMacro', system: { macro: 'Macro.xxx', highlight: 'always' } } },
   sound:  { path: 'sounds/eau.ogg', radius: 6, volume: 0.4 },
   light:  { dim: 4, bright: 2, color: '#ff9944', angle: 90, rotation: 0 },
   openSheets: false
@@ -99,9 +127,19 @@ await api.unbind(tile, { remove: false }); // détache en gardant les documents
 await api.promptBind([tile]);     // le dialogue du HUD
 ```
 
+Comportements au clic :
+
+```js
+await api.addClickBehavior(region, 'toScene', { targetScene: 'Scene.xxx' }); // clickMacro | toScene | openDocument | jukebox
+api.executeClick(behavior);        // déclenche un comportement à la main
+api.getClickableRegions();         // [{ region, behavior }] de la scène courante
+api.jukebox.start('Playlist.xxx'); api.jukebox.stop(); api.jukebox.listActive(); // MJ : qui écoute quoi
+api.resyncMusicForEveryone();      // MJ : tout le monde revient sur la musique du MJ
+```
+
 Utilitaires exposés aussi : `traceTileOutline(tile)` (polygone scène du
 contour alpha, ou `null`), `tileFrame`, `toScene`, `toLocal`,
-`pixelsToUnits`.
+`pixelsToUnits`, `grantObserver(uuid, userId)` (MJ).
 
 ## Modèle de données
 

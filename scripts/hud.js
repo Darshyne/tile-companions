@@ -8,6 +8,7 @@ import { MODULE_ID, KINDS } from './constants.js';
 import { bind, unbind, retrace, getCompanions, isBound } from './link.js';
 import { tileFrame, pixelsToUnits } from './geometry.js';
 import { prettyName } from './trace.js';
+import { CLICK_BEHAVIORS, behaviorLabel } from './behaviors/index.js';
 
 const L = k => game.i18n.localize(`TILECOMPANIONS.${k}`);
 
@@ -52,6 +53,8 @@ export async function promptBind(tiles) {
   const units = pixelsToUnits(scene, Math.max(frame.w, frame.h));
   const defaultName = single ? prettyName(single) : '';
   const gridUnits = esc(scene.grid?.units || '');
+  const byName = (a, b) => a.name.localeCompare(b.name, game.i18n.lang);
+  const opt = docs => [`<option value="">${L('Prompt.ConfigureLater')}</option>`, ...docs.sort(byName).map(d => `<option value="${d.uuid}">${esc(d.name)}</option>`)].join('');
   const badge = k => existing[k] ? ` <span class="hint">(${L('Prompt.AlreadyBound')})</span>` : '';
   const dis = k => existing[k] ? 'disabled' : '';
 
@@ -68,6 +71,25 @@ export async function promptBind(tiles) {
         <div class="form-fields"><input type="checkbox" name="trace" checked></div>
         <p class="hint">${L('Prompt.TraceHint')}</p>
       </div>
+      <div class="form-group">
+        <label>${L('Prompt.ClickBehavior')}</label>
+        <div class="form-fields"><select name="clickBehavior">
+          <option value="">${L('Prompt.ClickNone')}</option>
+          ${Object.keys(CLICK_BEHAVIORS).map(k => `<option value="${k}">${esc(behaviorLabel(k))}</option>`).join('')}
+        </select></div>
+        <p class="hint">${L('Prompt.ClickHint')}</p>
+      </div>
+      <div class="form-group" data-for="clickMacro"><label>${L('Prompt.Macro')}</label><div class="form-fields"><select name="macro">${opt(game.macros.contents)}</select></div></div>
+      <div class="form-group" data-for="toScene"><label>${L('Prompt.TargetScene')}</label><div class="form-fields"><select name="targetScene">${opt(game.scenes.contents.filter(s => s !== scene))}</select></div></div>
+      <div class="form-group" data-for="openDocument"><label>${L('Prompt.Journal')}</label><div class="form-fields"><select name="journal">${opt(game.journal.contents)}</select></div></div>
+      <div class="form-group" data-for="openDocument"><label>${L('Prompt.DocumentUuid')}</label><div class="form-fields"><input type="text" name="documentUuid" placeholder="JournalEntry.xxx.JournalEntryPage.yyy"></div><p class="hint">${L('Prompt.DocumentUuidHint')}</p></div>
+      <div class="form-group" data-for="openDocument"><label>${L('Prompt.Grant')}</label><div class="form-fields"><input type="checkbox" name="grant" checked></div></div>
+      <div class="form-group" data-for="jukebox"><label>${L('Prompt.Playlist')}</label><div class="form-fields"><select name="playlist">${opt(game.playlists.contents)}</select></div></div>
+      <div class="form-group" data-for="any"><label>${L('Prompt.Highlight')}</label><div class="form-fields"><select name="highlight">
+        <option value="hover">${game.i18n.localize('TILECOMPANIONS.ClickCommon.FIELDS.highlight.choices.hover')}</option>
+        <option value="always">${game.i18n.localize('TILECOMPANIONS.ClickCommon.FIELDS.highlight.choices.always')}</option>
+        <option value="never">${game.i18n.localize('TILECOMPANIONS.ClickCommon.FIELDS.highlight.choices.never')}</option>
+      </select></div></div>
     </fieldset>
     <fieldset>
       <legend><label><input type="checkbox" name="sound" ${dis('sound')}> ${L('Prompt.Sound')}</label>${badge('sound')}</legend>
@@ -126,6 +148,13 @@ export async function promptBind(tiles) {
     buttons,
     render: (ev, dialog) => {
       const root = dialog.element;
+      // Show only the target rows of the chosen click behavior.
+      const sel = root.querySelector('select[name="clickBehavior"]');
+      const syncRows = () => root.querySelectorAll('[data-for]').forEach(el => {
+        el.style.display = (el.dataset.for === sel.value || (el.dataset.for === 'any' && sel.value)) ? '' : 'none';
+      });
+      sel?.addEventListener('change', syncRows);
+      syncRows();
       root.querySelector('[data-action="pickSound"]')?.addEventListener('click', () => {
         const input = root.querySelector('input[name="soundPath"]');
         const FP = foundry.applications.apps?.FilePicker?.implementation ?? globalThis.FilePicker;
@@ -170,8 +199,18 @@ function readForm(form, single) {
   const chk = n => !!f[n]?.checked;
   const num = n => { const v = Number(val(n)); return Number.isFinite(v) ? v : undefined; };
   const color = (val('lightColor') || '').trim();
+  let behavior = null;
+  const kind = val('clickBehavior');
+  if ( kind ) {
+    const system = { highlight: val('highlight') || 'hover' };
+    if ( kind === 'clickMacro' ) system.macro = val('macro') || null;
+    if ( kind === 'toScene' ) system.targetScene = val('targetScene') || null;
+    if ( kind === 'openDocument' ) { system.document = val('documentUuid').trim() || val('journal') || null; system.grant = chk('grant'); }
+    if ( kind === 'jukebox' ) system.playlist = val('playlist') || null;
+    behavior = { type: kind, system };
+  }
   return {
-    region: chk('region') ? { trace: chk('trace'), name: single ? val('regionName').trim() : '' } : null,
+    region: chk('region') ? { trace: chk('trace'), name: single ? val('regionName').trim() : '', behavior } : null,
     sound: chk('sound') ? { path: val('soundPath').trim(), radius: num('soundRadius'), volume: num('soundVolume') ?? 0.5, repeat: chk('soundRepeat') } : null,
     light: chk('light') ? { dim: num('lightDim') ?? 0, bright: num('lightBright') ?? 0, color: color || null } : null,
     openSheets: chk('openSheets')

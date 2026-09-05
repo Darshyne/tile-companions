@@ -2,8 +2,8 @@
   "id": "tile-companions",
   "type": "module",
   "title": "Tile Companions",
-  "description": "Bind a Region, an Ambient Sound and/or an Ambient Light to a Tile. The region takes the visible (alpha) outline of the tile's image; all companions follow the tile when it is moved, resized, rotated, flipped, hidden or deleted. System-agnostic.",
-  "version": "0.1.0",
+  "description": "Bind a Region, an Ambient Sound and/or an Ambient Light to a Tile: the region takes the visible (alpha) outline of the tile image, and all companions follow the tile when it is moved, resized, rotated, flipped, hidden or deleted. Also adds tokenless click behaviors for regions (run a macro, go to a scene, open a journal, local jukebox) usable by players. System-agnostic.",
+  "version": "0.2.0",
   "url": "https://github.com/Darshyne/tile-companions",
   "license": "MIT",
   "manifest": "https://github.com/Darshyne/tile-companions/releases/latest/download/module.json",
@@ -32,5 +32,14 @@
       "path": "lang/fr.json"
     }
   ],
-  "readme": "https://github.com/Darshyne/tile-companions/blob/main/README.md"
+  "readme": "https://github.com/Darshyne/tile-companions/blob/main/README.md",
+  "documentTypes": {
+    "RegionBehavior": {
+      "clickMacro": {},
+      "toScene": {},
+      "openDocument": {},
+      "jukebox": {}
+    }
+  },
+  "socket": true
 }
