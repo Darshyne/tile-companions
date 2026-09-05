@@ -1,0 +1,73 @@
+{
+  "TILECOMPANIONS": {
+    "DefaultName": "Tile",
+    "HudTooltip": "Tile Companions — bind a region, a sound, a light to this tile",
+    "HudTooltipBound": "Tile Companions — this tile has companions (add / re-trace / detach)",
+    "Kind": {
+      "region": "region",
+      "sound": "sound",
+      "light": "light"
+    },
+    "Warn": {
+      "GMOnly": "Only a Gamemaster can bind companions to a tile.",
+      "NoScene": "This tile does not belong to a scene.",
+      "NoTile": "Select a tile on the canvas first."
+    },
+    "Info": {
+      "NothingToDo": "Nothing to create: the tile already has those companions.",
+      "Bound": "“{name}”: {list} bound to the tile.",
+      "BoundTraced": "“{name}”: {list} bound to the tile — region shaped on the image's visible outline.",
+      "BoundBox": "“{name}”: {list} bound to the tile — region on the tile's box (image pixels not readable).",
+      "Unbound": "“{name}”: companions deleted.",
+      "Detached": "“{name}”: companions detached (kept in the scene as independent documents).",
+      "Retraced": "“{name}”: region re-shaped on the image's visible outline.",
+      "RetracedBox": "“{name}”: region reset to the tile's box (image pixels not readable)."
+    },
+    "Prompt": {
+      "Title": "Tile Companions",
+      "Hint": "Create companions that follow this tile when it is moved, resized, rotated, flipped, hidden or deleted.",
+      "Multi": "({n} tiles selected: the same choices apply to each; names are taken from each tile.)",
+      "AlreadyBound": "already bound",
+      "Region": "Region",
+      "Name": "Name",
+      "NameAuto": "(from the tile name / image file)",
+      "Trace": "Trace the visible outline",
+      "TraceHint": "Region shaped on the image's non-transparent pixels. Unticked: the tile's rectangle.",
+      "Sound": "Ambient sound",
+      "SoundFile": "Audio file",
+      "Browse": "Browse",
+      "SoundRadius": "Radius",
+      "SoundVolume": "Volume",
+      "SoundRepeat": "Loop",
+      "Light": "Ambient light",
+      "LightRadii": "Dim / bright radius",
+      "LightDim": "Dim radius",
+      "LightBright": "Bright radius",
+      "LightColor": "Colour",
+      "LightColorHint": "Leave empty for a white light. Every other setting (animation, angle…) is in the light's own configuration, which opens after creation.",
+      "OpenSheets": "Open the sound / light configuration afterwards",
+      "Create": "Create",
+      "Retrace": "Re-trace the region",
+      "Unbind": "Detach…",
+      "Cancel": "Cancel",
+      "UnbindTitle": "Detach the companions",
+      "UnbindConfirm": "Delete the companions along with the link, or keep them in the scene as ordinary, independent documents?",
+      "UnbindDelete": "Delete them",
+      "UnbindKeep": "Keep them"
+    },
+    "Settings": {
+      "CascadeDelete": {
+        "Name": "Delete companions with the tile",
+        "Hint": "When a bound tile is deleted, its region, sound and light are deleted too. Off: they stay in the scene, unlinked."
+      },
+      "AutoRetrace": {
+        "Name": "Re-trace the region when the image changes",
+        "Hint": "When a bound tile gets a new image, its region is re-shaped on the new image's visible outline."
+      },
+      "SyncHidden": {
+        "Name": "Hide companions with the tile",
+        "Hint": "Hiding / showing a bound tile hides / shows its region, sound and light."
+      }
+    }
+  }
+}

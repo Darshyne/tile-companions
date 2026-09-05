@@ -1,0 +1,73 @@
+{
+  "TILECOMPANIONS": {
+    "DefaultName": "Tuile",
+    "HudTooltip": "Tile Companions — lier une région, un son, une lumière à cette tuile",
+    "HudTooltipBound": "Tile Companions — cette tuile a des compagnons (ajouter / redétourer / détacher)",
+    "Kind": {
+      "region": "région",
+      "sound": "son",
+      "light": "lumière"
+    },
+    "Warn": {
+      "GMOnly": "Seul un MJ peut lier des compagnons à une tuile.",
+      "NoScene": "Cette tuile n'appartient à aucune scène.",
+      "NoTile": "Sélectionnez d'abord une tuile sur le canevas."
+    },
+    "Info": {
+      "NothingToDo": "Rien à créer : la tuile a déjà ces compagnons.",
+      "Bound": "« {name} » : {list} lié(s) à la tuile.",
+      "BoundTraced": "« {name} » : {list} lié(s) à la tuile — région détourée sur le contour visible de l'image.",
+      "BoundBox": "« {name} » : {list} lié(s) à la tuile — région sur l'emprise de la tuile (pixels de l'image illisibles).",
+      "Unbound": "« {name} » : compagnons supprimés.",
+      "Detached": "« {name} » : compagnons détachés (conservés dans la scène comme documents indépendants).",
+      "Retraced": "« {name} » : région redétourée sur le contour visible de l'image.",
+      "RetracedBox": "« {name} » : région ramenée à l'emprise de la tuile (pixels de l'image illisibles)."
+    },
+    "Prompt": {
+      "Title": "Tile Companions",
+      "Hint": "Crée des compagnons qui suivent cette tuile quand elle est déplacée, redimensionnée, tournée, retournée, masquée ou supprimée.",
+      "Multi": "({n} tuiles sélectionnées : les mêmes choix s'appliquent à chacune ; les noms viennent de chaque tuile.)",
+      "AlreadyBound": "déjà liée",
+      "Region": "Région",
+      "Name": "Nom",
+      "NameAuto": "(d'après le nom de la tuile / du fichier image)",
+      "Trace": "Détourer le contour visible",
+      "TraceHint": "Région de la forme des pixels non transparents de l'image. Décoché : le rectangle de la tuile.",
+      "Sound": "Son d'ambiance",
+      "SoundFile": "Fichier audio",
+      "Browse": "Parcourir",
+      "SoundRadius": "Rayon",
+      "SoundVolume": "Volume",
+      "SoundRepeat": "En boucle",
+      "Light": "Lumière d'ambiance",
+      "LightRadii": "Rayon faible / vif",
+      "LightDim": "Rayon de lumière faible",
+      "LightBright": "Rayon de lumière vive",
+      "LightColor": "Couleur",
+      "LightColorHint": "Vide = lumière blanche. Tout le reste (animation, angle…) se règle dans la configuration de la lumière, ouverte après création.",
+      "OpenSheets": "Ouvrir la configuration du son / de la lumière ensuite",
+      "Create": "Créer",
+      "Retrace": "Redétourer la région",
+      "Unbind": "Détacher…",
+      "Cancel": "Annuler",
+      "UnbindTitle": "Détacher les compagnons",
+      "UnbindConfirm": "Supprimer les compagnons avec le lien, ou les garder dans la scène comme documents ordinaires, indépendants ?",
+      "UnbindDelete": "Les supprimer",
+      "UnbindKeep": "Les garder"
+    },
+    "Settings": {
+      "CascadeDelete": {
+        "Name": "Supprimer les compagnons avec la tuile",
+        "Hint": "À la suppression d'une tuile liée, sa région, son son et sa lumière sont supprimés aussi. Désactivé : ils restent dans la scène, déliés."
+      },
+      "AutoRetrace": {
+        "Name": "Redétourer la région quand l'image change",
+        "Hint": "Quand une tuile liée reçoit une nouvelle image, sa région est redessinée sur le contour visible de la nouvelle image."
+      },
+      "SyncHidden": {
+        "Name": "Masquer les compagnons avec la tuile",
+        "Hint": "Masquer / afficher une tuile liée masque / affiche sa région, son son et sa lumière."
+      }
+    }
+  }
+}

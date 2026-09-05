@@ -1,0 +1,36 @@
+{
+  "id": "tile-companions",
+  "type": "module",
+  "title": "Tile Companions",
+  "description": "Bind a Region, an Ambient Sound and/or an Ambient Light to a Tile. The region takes the visible (alpha) outline of the tile's image; all companions follow the tile when it is moved, resized, rotated, flipped, hidden or deleted. System-agnostic.",
+  "version": "0.1.0",
+  "url": "https://github.com/Darshyne/tile-companions",
+  "license": "MIT",
+  "manifest": "https://github.com/Darshyne/tile-companions/releases/latest/download/module.json",
+  "download": "https://github.com/Darshyne/tile-companions/releases/latest/download/module.zip",
+  "authors": [
+    {
+      "name": "Darsh MJ"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "lang/fr.json"
+    }
+  ],
+  "readme": "https://github.com/Darshyne/tile-companions/blob/main/README.md"
+}
