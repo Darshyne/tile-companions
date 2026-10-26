@@ -1,0 +1,183 @@
+{
+  "TYPES": {
+    "RegionBehavior": {
+      "tile-companions": {
+        "clickMacro": "Macro ao clicar (Tile Companions)",
+        "toScene": "Ir para uma cena ao clicar (Tile Companions)",
+        "openDocument": "Abrir documento ao clicar (Tile Companions)",
+        "jukebox": "Jukebox ao clicar (Tile Companions)"
+      }
+    }
+  },
+  "TILECOMPANIONS": {
+    "DefaultName": "Tile",
+    "HudTooltip": "Tile Companions — vincular uma região, um som e uma luz a este tile",
+    "HudTooltipBound": "Tile Companions — este tile tem elementos vinculados (adicionar / refazer contorno / desvincular)",
+    "Kind": {
+      "region": "região",
+      "sound": "som",
+      "light": "luz"
+    },
+    "Warn": {
+      "GMOnly": "Somente um mestre pode fazer isso.",
+      "NoScene": "Este tile não pertence a uma cena.",
+      "NoTile": "Selecione primeiro um tile no tabuleiro.",
+      "NoMacro": "Esta região não tem uma macro configurada (ou a macro foi excluída).",
+      "NoTargetScene": "Esta região não tem uma cena configurada (ou a cena foi excluída).",
+      "NoPlaylist": "Nenhuma lista de reprodução configurada (ou a lista foi excluída).",
+      "EmptyPlaylist": "Esta lista de reprodução está vazia.",
+      "NoDocument": "Esta região não tem um diário (ou uma página) configurado.",
+      "DocumentNoPermission": "Você não tem permissão para ler este documento.",
+      "DocumentNoGM": "Nenhum mestre está conectado para conceder acesso a este documento — tente novamente quando houver um mestre conectado.",
+      "DocumentGrantFailed": "O mestre não conseguiu conceder acesso a este documento."
+    },
+    "Info": {
+      "NothingToDo": "Nada a criar: o tile já tem esses elementos vinculados.",
+      "Bound": "Vinculados a “{name}”: {list}.",
+      "BoundTraced": "Vinculados a “{name}”: {list} — região traçada sobre o contorno visível da imagem.",
+      "BoundBox": "Vinculados a “{name}”: {list} — região limitada ao retângulo do tile (não foi possível ler os pixels da imagem).",
+      "Unbound": "“{name}”: elementos vinculados excluídos.",
+      "Detached": "“{name}”: elementos desvinculados (mantidos na cena como documentos independentes).",
+      "Retraced": "“{name}”: contorno da região refeito sobre o contorno visível da imagem.",
+      "RetracedBox": "“{name}”: região redefinida para o retângulo do tile (não foi possível ler os pixels da imagem).",
+      "JukeboxOn": "🎷 Jukebox: {playlist} — {track}",
+      "JukeboxOff": "🎷 Jukebox interrompida.",
+      "JukeboxOffResumed": "🎷 Jukebox interrompida — a música do mestre é retomada.",
+      "ResyncDone": "🎷 Música sincronizada novamente para toda a mesa — a lista de reprodução do mestre é retomada.",
+      "ResyncSilence": "🎷 Música local interrompida para toda a mesa (nenhuma lista de reprodução do mestre está tocando)."
+    },
+    "Prompt": {
+      "Title": "Tile Companions",
+      "Hint": "Cria elementos vinculados a este tile. Eles acompanham o tile quando ele é movido, redimensionado, girado, espelhado, ocultado ou excluído.",
+      "Multi": "({n} tiles selecionados: as mesmas opções se aplicam a cada um; os nomes são obtidos de cada tile.)",
+      "AlreadyBound": "já vinculado",
+      "ConfigureLater": "— configurar depois —",
+      "Region": "Região",
+      "Name": "Nome",
+      "NameAuto": "(do nome do tile / arquivo de imagem)",
+      "Trace": "Traçar o contorno visível",
+      "TraceHint": "A região segue o contorno dos pixels não transparentes da imagem. Desmarcado: usa o retângulo do tile.",
+      "ClickBehavior": "Ao clicar",
+      "ClickNone": "— nada (região simples) —",
+      "ClickHint": "Permite que jogadores cliquem na região, sem um token: executar uma macro, ir para uma cena, abrir um diário ou iniciar uma jukebox local. As demais opções (rótulo ao passar o cursor, cor…) ficam na configuração do comportamento.",
+      "Macro": "Macro",
+      "TargetScene": "Cena de destino",
+      "Journal": "Diário",
+      "DocumentUuid": "…ou o UUID de uma página",
+      "DocumentUuidHint": "Substitui o diário acima. Clique com o botão direito no título de uma página → Copiar UUID.",
+      "Grant": "Conceder permissão a quem clicar",
+      "Playlist": "Lista de reprodução",
+      "Highlight": "Realce",
+      "Sound": "Som ambiente",
+      "SoundFile": "Arquivo de áudio",
+      "Browse": "Procurar",
+      "SoundRadius": "Raio",
+      "SoundVolume": "Volume",
+      "SoundRepeat": "Repetir",
+      "Light": "Luz ambiente",
+      "LightRadii": "Raio da luz fraca / plena",
+      "LightDim": "Raio da luz fraca",
+      "LightBright": "Raio da luz plena",
+      "LightColor": "Cor",
+      "LightColorHint": "Deixe em branco para uma luz branca. As demais opções (animação, ângulo…) ficam na configuração da própria luz, que se abre após a criação.",
+      "OpenSheets": "Abrir as janelas de configuração em seguida",
+      "Create": "Criar",
+      "Retrace": "Refazer o contorno da região",
+      "Unbind": "Desvincular…",
+      "Cancel": "Cancelar",
+      "UnbindTitle": "Desvincular os elementos",
+      "UnbindConfirm": "Excluir os elementos junto com o vínculo ou mantê-los na cena como documentos comuns e independentes?",
+      "UnbindDelete": "Excluir",
+      "UnbindKeep": "Manter"
+    },
+    "ClickCommon": {
+      "FIELDS": {
+        "label": {
+          "label": "Rótulo ao passar o cursor",
+          "hint": "Exibido acima da região ao passar o cursor. Em branco = nome da região (ou do alvo)."
+        },
+        "highlight": {
+          "label": "Realce",
+          "hint": "Como indicar a área clicável aos jogadores.",
+          "choices": {
+            "hover": "Somente ao passar o cursor",
+            "always": "Sempre (sutil) + ao passar o cursor",
+            "never": "Nunca (somente o cursor)"
+          }
+        },
+        "color": {
+          "label": "Cor do realce",
+          "hint": "Em branco = cor da região."
+        }
+      }
+    },
+    "MacroBehavior": {
+      "Hint": "Permite clicar na região: um clique executa a macro escolhida no cliente do usuário que clicou — mesmo sem permissão sobre a macro (não é necessário um token). A macro é executada com os direitos do jogador: o script não pode modificar o que ele não tem permissão para alterar.",
+      "FIELDS": {
+        "macro": {
+          "label": "Macro a executar",
+          "hint": "Arraste e solte a macro (script ou chat). Ela é executada para o usuário que clicar, com ou sem permissão sobre a macro. Em uma macro de script, scope.behavior e scope.region fornecem o contexto."
+        }
+      }
+    },
+    "SceneBehavior": {
+      "Hint": "Permite clicar na região: um clique leva o usuário à cena escolhida (não é necessário um token — uma porta, uma escadaria, um mapa da cidade…). Os jogadores podem acessá-la mesmo que ela não esteja na barra de navegação.",
+      "FIELDS": {
+        "targetScene": {
+          "label": "Cena de destino",
+          "hint": "Arraste e solte a cena."
+        },
+        "activateForAll": {
+          "label": "Ativar para toda a mesa (mestre)",
+          "hint": "Quando o mestre clicar: ativa a cena para todos os jogadores, em vez de visualizá-la sozinho. Não tem efeito para jogadores."
+        }
+      }
+    },
+    "DocumentBehavior": {
+      "Hint": "Permite clicar na região: um clique abre um diário (ou uma página específica) para o usuário que clicou — um cartaz, uma carta, um jornal, uma pista… Se o jogador não tiver permissão para vê-lo, o mestre conectado concede automaticamente a permissão de Observador (permanente, por jogador).",
+      "FIELDS": {
+        "document": {
+          "label": "Diário ou página",
+          "hint": "Arraste e solte um diário ou uma página de diário (UUID JournalEntry.x.JournalEntryPage.y)."
+        },
+        "grant": {
+          "label": "Conceder permissão a quem clicar",
+          "hint": "Concede a permissão de Observador ao jogador que clicar (por meio de um mestre conectado — é necessário haver um). Desmarcado: somente jogadores que já tenham permissão podem abrir o documento."
+        }
+      }
+    },
+    "JukeboxBehavior": {
+      "Hint": "Permite clicar na região: um clique inicia (ou interrompe) uma jukebox local com a lista de reprodução escolhida para o usuário que clicou. A música desse usuário é silenciada gradualmente (somente o canal Música — não os canais Ambiente ou Interface), e a jukebox toca no canal Interface, cujo volume ele pode ajustar. Não requer um mestre conectado; o mestre pode ver quem está ouvindo o quê e interromper tudo.",
+      "FIELDS": {
+        "playlist": {
+          "label": "Lista de reprodução",
+          "hint": "Arraste e solte a lista de reprodução. Seu modo (sequencial, aleatório ou simultâneo) e as repetições de cada faixa são respeitados."
+        },
+        "mode": {
+          "label": "Modo de reprodução",
+          "hint": "Substitui o modo da lista de reprodução nesta região.",
+          "choices": {
+            "playlist": "O da própria lista de reprodução",
+            "sequential": "Sequencial (repetir)",
+            "shuffle": "Aleatório",
+            "simultaneous": "Simultâneo"
+          }
+        }
+      }
+    },
+    "Settings": {
+      "CascadeDelete": {
+        "Name": "Excluir os elementos vinculados junto com o tile",
+        "Hint": "Quando um tile com vínculos é excluído, sua região, seu som e sua luz também são excluídos. Desativado: permanecem na cena, sem vínculo."
+      },
+      "AutoRetrace": {
+        "Name": "Refazer o contorno da região quando a imagem mudar",
+        "Hint": "Quando um tile com vínculos recebe uma nova imagem, o contorno da região é refeito sobre o contorno visível da nova imagem."
+      },
+      "SyncHidden": {
+        "Name": "Ocultar os elementos vinculados junto com o tile",
+        "Hint": "Ocultar / mostrar um tile com vínculos também oculta / mostra sua região, seu som e sua luz."
+      }
+    }
+  }
+}
